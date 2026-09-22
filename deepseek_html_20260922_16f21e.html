@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afghan Hangout — Resmi Site</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  :root{
+    --bg:#08080c; --bg2:#0f0f16; --card:#16161f; --card2:#1c1c28;
+    --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+    --text:#ececf1; --muted:#8b8b9e; --muted2:#5f5f74;
+    --gold:#e0b354; --red:#c8102e; --green:#0e7a3c;
+    --shadow:0 20px 50px -20px rgba(0,0,0,.9);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Tahoma,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    overflow-x:hidden; position:relative; line-height:1.55;
+  }
+  body::before{
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(200,16,46,.14), transparent 55%),
+      radial-gradient(ellipse at 85% 100%, rgba(14,122,60,.14), transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(224,179,84,.05), transparent 60%);
+  }
+  ::selection{ background:rgba(224,179,84,.35); color:#fff; }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:var(--bg); }
+  ::-webkit-scrollbar-thumb{ background:#22222e; border-radius:10px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#2f2f3e; }
+
+  header{
+    position:sticky; top:0; z-index:100;
+    backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+    background:rgba(8,8,12,.72);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{
+    max-width:1200px; margin:0 auto; padding:12px 22px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .logo{
+    display:flex; align-items:center; gap:12px; cursor:pointer;
+    user-select:none; padding:6px 8px; border-radius:12px;
+    transition:background .25s;
+  }
+  .logo:hover{ background:rgba(255,255,255,.04); }
+  .logo-mark{
+    display:flex; width:36px; height:26px; border-radius:7px;
+    overflow:hidden; box-shadow:0 6px 18px -6px rgba(200,16,46,.55);
+    border:1px solid rgba(255,255,255,.1);
+  }
+  .logo-mark span{ flex:1; }
+  .logo-mark span:nth-child(1){ background:#0b0b0b; }
+  .logo-mark span:nth-child(2){ background:var(--red); }
+  .logo-mark span:nth-child(3){ background:var(--green); }
+  .logo-text{ display:flex; flex-direction:column; line-height:1.1; }
+  .logo-text b{ font-size:.98rem; font-weight:800; letter-spacing:.3px; }
+  .logo-text small{ font-size:.65rem; color:var(--muted); letter-spacing:1.4px; text-transform:uppercase; }
+
+  .nav-links{ display:flex; gap:4px; align-items:center; }
+  .nav-links button{
+    background:transparent; border:none; color:var(--muted);
+    padding:10px 15px; border-radius:10px; font-size:.9rem; font-weight:600;
+    cursor:pointer; transition:all .25s var(--ease); font-family:inherit;
+    position:relative;
+  }
+  .nav-links button:hover{ color:var(--text); background:rgba(255,255,255,.05); }
+  .nav-links button.active{ color:var(--gold); background:rgba(224,179,84,.09); }
+  .nav-links button.active::after{
+    content:''; position:absolute; left:20%; right:20%; bottom:-12px;
+    height:2px; border-radius:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .nav-right{ display:flex; align-items:center; gap:8px; }
+
+  .lang-wrap{ position:relative; }
+  .lang-btn{
+    display:flex; align-items:center; gap:7px;
+    height:42px; padding:0 12px; border-radius:12px;
+    border:1px solid var(--border); background:var(--card);
+    color:var(--text); cursor:pointer; font-family:inherit;
+    font-size:.82rem; font-weight:700; letter-spacing:.6px;
+    transition:all .3s var(--ease);
+  }
+  .lang-btn:hover{ border-color:var(--gold); box-shadow:0 0 0 4px rgba(224,179,84,.1); }
+  .lang-btn svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.9; }
+  .lang-dropdown{
+    position:absolute; top:calc(100% + 10px); right:0;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:6px; min-width:190px;
+    box-shadow:var(--shadow);
+    opacity:0; transform:translateY(-10px) scale(.96); pointer-events:none;
+    transition:all .28s var(--ease); transform-origin:top right;
+    z-index:200;
+  }
+  .lang-dropdown.open{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .lang-dropdown button{
+    width:100%; display:flex; align-items:center; gap:11px;
+    padding:10px 13px; border:none; background:transparent;
+    color:var(--text); font-size:.88rem; font-weight:600;
+    border-radius:10px; cursor:pointer; transition:background .2s;
+    font-family:inherit; text-align:left;
+  }
+  .lang-dropdown button:hover{ background:rgba(255,255,255,.05); }
+  .lang-dropdown button.active{ background:rgba(224,179,84,.12); color:var(--gold); }
+  .lang-dropdown button .flag{ font-size:1.15rem; }
+
+  .account-wrap{ position:relative; }
+  .account-btn{
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--border); background:var(--card);
+    display:grid; place-items:center; cursor:pointer;
+    transition:all .3s var(--ease); color:var(--text); position:relative;
+    font-family:inherit;
+  }
+  .account-btn:hover{ border-color:var(--gold); transform:scale(1.06); box-shadow:0 0 0 4px rgba(224,179,84,.1); }
+  .account-btn svg{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .account-btn.logged-in{ border-color:var(--gold); }
+  .account-btn .dot{
+    position:absolute; bottom:-1px; right:-1px; width:12px; height:12px;
+    border-radius:50%; background:var(--green); border:2px solid var(--bg);
+  }
+
+  .dropdown{
+    position:absolute; top:calc(100% + 10px); right:0;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:8px; min-width:230px;
+    box-shadow:var(--shadow);
+    opacity:0; transform:translateY(-10px) scale(.96); pointer-events:none;
+    transition:all .28s var(--ease); transform-origin:top right;
+    z-index:200;
+  }
+  .dropdown.open{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .dropdown .dd-head{
+    padding:12px 14px; border-bottom:1px solid var(--border); margin-bottom:6px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .dd-avatar{
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,var(--red),var(--green));
+    display:grid; place-items:center; font-weight:800; font-size:.85rem;
+    color:#fff; flex-shrink:0;
+  }
+  .dd-head b{ font-size:.9rem; display:block; }
+  .dd-head small{ font-size:.72rem; color:var(--muted); }
+  .dd-item{
+    width:100%; display:flex; align-items:center; gap:10px;
+    padding:11px 14px; border:none; background:transparent;
+    color:var(--text); font-size:.88rem; font-weight:600;
+    border-radius:10px; cursor:pointer; transition:background .2s;
+    font-family:inherit; text-align:left;
+  }
+  .dd-item:hover{ background:rgba(255,255,255,.05); }
+  .dd-item.danger{ color:#ff6b7f; }
+  .dd-item.danger:hover{ background:rgba(200,16,46,.12); }
+  .dd-item svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.9; flex-shrink:0; }
+
+  main{
+    position:relative; z-index:1;
+    max-width:1200px; margin:0 auto; padding:32px 22px 90px;
+  }
+  .page{ display:none; }
+  .page.active{ display:block; animation:pageIn .55s var(--ease); }
+  @keyframes pageIn{
+    from{ opacity:0; transform:translateY(24px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .hero{
+    position:relative; border-radius:28px; overflow:hidden;
+    padding:70px 40px 90px; min-height:460px;
+    background:linear-gradient(165deg,#15151f 0%,#0a0a10 100%);
+    border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; isolation:isolate;
+    box-shadow:var(--shadow);
+  }
+  .hero::before{
+    content:''; position:absolute; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(224,179,84,.14), transparent 60%),
+      radial-gradient(ellipse at 0% 100%, rgba(200,16,46,.16), transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(14,122,60,.16), transparent 55%);
+  }
+  .hero-art{
+    position:absolute; left:0; right:0; bottom:0; width:100%;
+    height:220px; z-index:-1; opacity:.85; pointer-events:none;
+  }
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 15px; border-radius:999px;
+    background:rgba(224,179,84,.1); border:1px solid rgba(224,179,84,.28);
+    color:var(--gold); font-size:.74rem; font-weight:700;
+    letter-spacing:1.6px; text-transform:uppercase; margin-bottom:22px;
+    animation:fadeUp .8s var(--ease) both;
+  }
+  .hero-badge .pulse-dot{
+    width:7px; height:7px; border-radius:50%; background:var(--gold);
+    box-shadow:0 0 0 0 rgba(224,179,84,.7);
+    animation:pulseDot 1.8s infinite;
+  }
+  @keyframes pulseDot{
+    0%{ box-shadow:0 0 0 0 rgba(224,179,84,.7); }
+    70%{ box-shadow:0 0 0 10px rgba(224,179,84,0); }
+    100%{ box-shadow:0 0 0 0 rgba(224,179,84,0); }
+  }
+  .hero h1{
+    font-size:clamp(2.2rem,6vw,4.2rem); font-weight:900;
+    letter-spacing:-1.5px; line-height:1.05; margin-bottom:18px;
+    background:linear-gradient(120deg,#fff 0%,#e0b354 40%,#c8102e 70%,#0e7a3c 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation:fadeUp .9s .1s var(--ease) both;
+  }
+  .hero p{
+    max-width:620px; color:var(--muted); font-size:1.02rem;
+    margin-bottom:32px; animation:fadeUp .9s .2s var(--ease) both;
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(20px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .hero-actions{
+    display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+    animation:fadeUp .9s .3s var(--ease) both;
+  }
+  .btn{
+    padding:14px 26px; border-radius:14px; border:none;
+    font-size:.95rem; font-weight:700; cursor:pointer;
+    font-family:inherit; transition:all .28s var(--ease);
+    display:inline-flex; align-items:center; gap:9px;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--gold),#c99a37);
+    color:#1a1206; box-shadow:0 10px 30px -10px rgba(224,179,84,.5);
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 16px 40px -12px rgba(224,179,84,.65); }
+  .btn-ghost{
+    background:rgba(255,255,255,.05); color:var(--text);
+    border:1px solid var(--border2);
+  }
+  .btn-ghost:hover{ background:rgba(255,255,255,.09); transform:translateY(-3px); }
+  .btn svg{ width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; }
+
+  .hero-stats{
+    display:flex; gap:36px; margin-top:52px; flex-wrap:wrap; justify-content:center;
+    animation:fadeUp .9s .4s var(--ease) both;
+  }
+  .hero-stat{ text-align:center; }
+  .hero-stat b{
+    display:block; font-size:1.6rem; font-weight:800;
+    color:var(--gold); font-variant-numeric:tabular-nums;
+  }
+  .hero-stat span{ font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:1.3px; }
+
+  .page-header{ margin-bottom:32px; }
+  .page-header h1{
+    font-size:clamp(1.7rem,4vw,2.5rem); font-weight:800;
+    letter-spacing:-.8px; margin-bottom:8px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .page-header h1::before{
+    content:''; width:5px; height:34px; border-radius:3px;
+    background:linear-gradient(180deg,var(--red),var(--gold),var(--green));
+  }
+  .page-header p{ color:var(--muted); font-size:.98rem; padding-left:19px; }
+
+  .news-grid{
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  }
+  .news-card{
+    background:linear-gradient(165deg,var(--card),var(--bg2));
+    border:1px solid var(--border); border-radius:20px;
+    padding:24px; position:relative; overflow:hidden;
+    transition:all .4s var(--ease);
+    animation:cardIn .5s var(--ease) both;
+  }
+  @keyframes cardIn{
+    from{ opacity:0; transform:translateY(18px) scale(.97); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .news-card::before{
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:linear-gradient(180deg,var(--red),var(--gold),var(--green));
+    opacity:.7;
+  }
+  .news-card:hover{
+    transform:translateY(-5px); border-color:var(--border2);
+    box-shadow:0 25px 50px -20px rgba(0,0,0,.85);
+  }
+  .news-head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:14px; gap:12px;
+  }
+  .news-badge{
+    font-size:.66rem; font-weight:800; letter-spacing:1.4px;
+    text-transform:uppercase; color:var(--gold);
+    padding:4px 10px; border-radius:6px; background:rgba(224,179,84,.1);
+    border:1px solid rgba(224,179,84,.25);
+  }
+  .news-head time{ font-size:.75rem; color:var(--muted2); }
+  .news-card h3{
+    font-size:1.15rem; font-weight:700; margin-bottom:10px;
+    letter-spacing:-.3px; line-height:1.35;
+  }
+  .news-card p{
+    color:var(--muted); font-size:.9rem; line-height:1.65;
+    margin-bottom:16px; white-space:pre-wrap; word-break:break-word;
+  }
+  .news-foot{
+    font-size:.75rem; color:var(--muted2);
+    padding-top:14px; border-top:1px solid var(--border);
+    display:flex; align-items:center; gap:8px;
+  }
+  .news-foot::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--green); flex-shrink:0;
+  }
+  .empty{
+    grid-column:1/-1; text-align:center; padding:60px 20px;
+    color:var(--muted); font-size:.95rem;
+  }
+  .empty svg{ width:48px; height:48px; stroke:var(--muted2); fill:none; stroke-width:1.5; margin-bottom:14px; }
+
+  .admin-hint{
+    margin-top:56px; text-align:center; padding-top:28px;
+    border-top:1px solid var(--border);
+  }
+  .admin-link{
+    background:none; border:none; color:var(--muted2);
+    font-size:.78rem; letter-spacing:3px; text-transform:uppercase;
+    cursor:pointer; padding:8px 14px; border-radius:8px;
+    font-family:inherit; transition:all .3s var(--ease);
+    font-weight:600;
+  }
+  .admin-link:hover{ color:var(--gold); letter-spacing:5px; }
+
+  .feedback-layout{
+    display:grid; gap:24px;
+    grid-template-columns:1fr 1fr;
+  }
+  @media (max-width:820px){ .feedback-layout{ grid-template-columns:1fr; } }
+  .panel{
+    background:linear-gradient(165deg,var(--card),var(--bg2));
+    border:1px solid var(--border); border-radius:22px; padding:28px;
+  }
+  .panel h2{
+    font-size:1.15rem; font-weight:700; margin-bottom:20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .panel h2 svg{ width:19px; height:19px; stroke:var(--gold); fill:none; stroke-width:1.9; }
+
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-size:.76rem; color:var(--muted);
+    text-transform:uppercase; letter-spacing:1.1px;
+    margin-bottom:8px; font-weight:700;
+  }
+  .field input, .field textarea, .field select{
+    width:100%; padding:13px 15px; border-radius:12px;
+    background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-size:.92rem; font-family:inherit;
+    transition:all .25s var(--ease); outline:none;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 4px rgba(224,179,84,.1);
+    background:var(--bg2);
+  }
+  .field textarea{ resize:vertical; min-height:110px; line-height:1.6; }
+  .field select{ cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b8b9e' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat; background-position:right 14px center;
+    padding-right:40px;
+  }
+  .field select option{ background:var(--bg2); color:var(--text); }
+
+  .feedback-tips{
+    list-style:none; display:flex; flex-direction:column; gap:14px;
+  }
+  .feedback-tips li{
+    display:flex; gap:12px; align-items:flex-start;
+    font-size:.88rem; color:var(--muted); line-height:1.55;
+  }
+  .feedback-tips li::before{
+    content:''; flex-shrink:0; width:6px; height:6px; border-radius:50%;
+    background:var(--gold); margin-top:8px;
+  }
+
+  .admin-locked{
+    text-align:center; padding:70px 24px;
+    background:linear-gradient(165deg,var(--card),var(--bg2));
+    border:1px solid var(--border); border-radius:24px;
+  }
+  .admin-locked svg{
+    width:56px; height:56px; stroke:var(--gold); fill:none;
+    stroke-width:1.5; margin-bottom:18px; opacity:.8;
+  }
+  .admin-locked h2{ font-size:1.3rem; margin-bottom:8px; }
+  .admin-locked p{ color:var(--muted); font-size:.9rem; }
+
+  .admin-grid{ display:grid; gap:20px; grid-template-columns:1fr 1fr; }
+  @media (max-width:900px){ .admin-grid{ grid-template-columns:1fr; } }
+
+  .admin-stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+    margin-bottom:24px;
+  }
+  .admin-stat{
+    background:var(--bg); border:1px solid var(--border);
+    border-radius:14px; padding:16px; text-align:center;
+  }
+  .admin-stat b{ display:block; font-size:1.6rem; color:var(--gold); font-weight:800; }
+  .admin-stat span{ font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:1.1px; }
+
+  .list{ display:flex; flex-direction:column; gap:10px; max-height:520px; overflow-y:auto; padding-right:4px; }
+  .list-item{
+    background:var(--bg); border:1px solid var(--border);
+    border-radius:14px; padding:14px 16px;
+    display:flex; gap:12px; align-items:flex-start;
+    transition:border-color .25s;
+  }
+  .list-item:hover{ border-color:var(--border2); }
+  .list-item .li-body{ flex:1; min-width:0; }
+  .list-item .li-body b{
+    display:block; font-size:.92rem; margin-bottom:4px;
+    word-break:break-word;
+  }
+  .list-item .li-body p{
+    font-size:.82rem; color:var(--muted); line-height:1.5;
+    word-break:break-word; white-space:pre-wrap;
+  }
+  .list-item .li-body small{
+    display:block; font-size:.7rem; color:var(--muted2);
+    margin-top:6px; letter-spacing:.3px;
+  }
+  .icon-btn{
+    width:32px; height:32px; border-radius:9px; flex-shrink:0;
+    background:rgba(200,16,46,.12); border:1px solid rgba(200,16,46,.3);
+    color:#ff6b7f; cursor:pointer; display:grid; place-items:center;
+    transition:all .25s var(--ease); font-family:inherit;
+  }
+  .icon-btn:hover{ background:rgba(200,16,46,.25); transform:scale(1.08); }
+  .icon-btn svg{ width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; }
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    display:grid; place-items:center; z-index:1000; padding:20px;
+    opacity:0; pointer-events:none; transition:opacity .3s var(--ease);
+  }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  .modal{
+    background:linear-gradient(165deg,var(--card),var(--bg2));
+    border:1px solid var(--border); border-radius:24px;
+    padding:34px 30px; width:100%; max-width:420px;
+    box-shadow:var(--shadow);
+    transform:scale(.9) translateY(20px); opacity:0;
+    transition:transform .4s var(--ease), opacity .3s var(--ease);
+    position:relative;
+  }
+  .modal-backdrop.open .modal{ transform:scale(1) translateY(0); opacity:1; }
+  .modal-close{
+    position:absolute; top:14px; right:14px;
+    width:34px; height:34px; border-radius:10px;
+    background:rgba(255,255,255,.05); border:none;
+    color:var(--muted); cursor:pointer;
+    display:grid; place-items:center; transition:all .25s;
+    font-family:inherit;
+  }
+  .modal-close:hover{ background:rgba(255,255,255,.1); color:var(--text); }
+  .modal-close svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.2; }
+
+  .modal-head{ text-align:center; margin-bottom:26px; }
+  .modal-head .m-icon{
+    width:60px; height:60px; border-radius:18px; margin:0 auto 14px;
+    background:linear-gradient(135deg,var(--red),var(--green));
+    display:grid; place-items:center; font-size:1.5rem;
+    box-shadow:0 12px 30px -10px rgba(200,16,46,.5);
+  }
+  .modal-head h2{ font-size:1.35rem; font-weight:800; margin-bottom:5px; letter-spacing:-.3px; }
+  .modal-head p{ font-size:.85rem; color:var(--muted); }
+
+  .tabs{
+    display:grid; grid-template-columns:1fr 1fr; gap:6px;
+    background:var(--bg); padding:5px; border-radius:14px;
+    margin-bottom:22px; border:1px solid var(--border);
+  }
+  .tabs button{
+    padding:11px; border-radius:10px; border:none; background:transparent;
+    color:var(--muted); font-size:.88rem; font-weight:700;
+    cursor:pointer; transition:all .28s var(--ease); font-family:inherit;
+  }
+  .tabs button.active{
+    background:linear-gradient(135deg,var(--gold),#c99a37);
+    color:#1a1206; box-shadow:0 6px 18px -6px rgba(224,179,84,.5);
+  }
+
+  .form-tab{ display:none; animation:pageIn .35s var(--ease); }
+  .form-tab.active{ display:block; }
+
+  .submit-btn{
+    width:100%; padding:14px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,var(--gold),#c99a37);
+    color:#1a1206; font-size:.95rem; font-weight:800;
+    cursor:pointer; font-family:inherit; margin-top:6px;
+    transition:all .28s var(--ease);
+    box-shadow:0 10px 26px -10px rgba(224,179,84,.5);
+  }
+  .submit-btn:hover{ transform:translateY(-2px); box-shadow:0 16px 34px -12px rgba(224,179,84,.65); }
+  .submit-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+  .err-msg{
+    color:#ff6b7f; font-size:.82rem; margin-top:10px;
+    text-align:center; min-height:1em; word-break:break-word;
+  }
+
+  .toast{
+    position:fixed; bottom:30px; left:50%;
+    transform:translateX(-50%) translateY(140px);
+    background:var(--card); border:1px solid var(--border);
+    padding:14px 22px; border-radius:14px;
+    box-shadow:var(--shadow); font-weight:600; font-size:.9rem;
+    z-index:9999; opacity:0;
+    transition:all .4s var(--ease);
+    display:flex; align-items:center; gap:10px;
+    max-width:90vw;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.success{ border-color:rgba(34,197,94,.5); }
+  .toast.success::before{ content:''; width:8px; height:8px; border-radius:50%; background:#22c55e; }
+  .toast.error{ border-color:rgba(239,68,68,.5); }
+  .toast.error::before{ content:''; width:8px; height:8px; border-radius:50%; background:#ef4444; }
+  .toast.info::before{ content:''; width:8px; height:8px; border-radius:50%; background:var(--gold); }
+
+  footer{
+    position:relative; z-index:1;
+    border-top:1px solid var(--border);
+    padding:26px 22px; text-align:center;
+    color:var(--muted2); font-size:.8rem;
+  }
+  footer b{ color:var(--gold); letter-spacing:1px; }
+
+  @media (max-width:820px){
+    .nav{ padding:10px 14px; gap:8px; flex-wrap:wrap; }
+    .nav-links{ order:3; width:100%; justify-content:center; padding-bottom:4px; }
+    .nav-links button{ padding:8px 11px; font-size:.82rem; }
+    .logo-text small{ display:none; }
+    .lang-btn span:not(.flag){ display:none; }
+    .lang-btn{ padding:0 10px; }
+    main{ padding:22px 14px 70px; }
+    .hero{ padding:50px 22px 80px; min-height:400px; }
+    .hero-stats{ gap:22px; }
+    .modal{ padding:26px 20px; }
+    .admin-stats{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo" id="logoBtn">
+      <div class="logo-mark"><span></span><span></span><span></span></div>
+      <div class="logo-text">
+        <b>Afghan Hangout</b>
+        <small data-i18n="logo.subtitle">Roblox Resmi Site</small>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <button data-section="home"     data-i18n="nav.home"     class="active">Ana Sayfa</button>
+      <button data-section="news"     data-i18n="nav.news">Haberler</button>
+      <button data-section="feedback" data-i18n="nav.feedback">Şikayet &amp; Öneri</button>
+    </nav>
+
+    <div class="nav-right">
+      <div class="lang-wrap">
+        <button class="lang-btn" id="langBtn" aria-label="Language">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="flag" id="langFlag">🇹🇷</span>
+          <span id="langCode">TR</span>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+          <button data-lang="tr"><span class="flag">🇹🇷</span> Türkçe</button>
+          <button data-lang="en"><span class="flag">🇬🇧</span> English</button>
+          <button data-lang="fa"><span class="flag">🇦🇫</span> فارسی</button>
+          <button data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+          <button data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+          <button data-lang="nl"><span class="flag">🇳🇱</span> Nederlands</button>
+        </div>
+      </div>
+
+      <div class="account-wrap">
+        <button class="account-btn" id="accountBtn" aria-label="Hesap">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <div class="dropdown" id="accountDropdown"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="page active" id="home">
+    <div class="hero">
+      <svg class="hero-art" viewBox="0 0 1200 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a1a26" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#0a0a10" stop-opacity="1"/>
+          </linearGradient>
+          <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#101018" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#08080c" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,220 L0,150 Q80,90 160,140 T340,120 Q430,60 520,130 T700,110 Q800,50 900,130 T1100,120 Q1160,90 1200,140 L1200,220 Z" fill="url(#m1)"/>
+        <path d="M0,220 L0,180 Q100,140 200,175 T400,160 Q500,120 600,170 T800,150 Q900,120 1000,170 T1200,160 L1200,220 Z" fill="url(#m2)"/>
+        <g fill="#05050a" opacity=".95">
+          <rect x="560" y="175" width="80" height="45" rx="2"/>
+          <path d="M600,140 Q615,155 615,175 L585,175 Q585,155 600,140 Z"/>
+          <path d="M600,130 L600,140" stroke="#05050a" stroke-width="3"/>
+          <circle cx="600" cy="127" r="4"/>
+          <rect x="536" y="150" width="10" height="70" rx="2"/>
+          <path d="M541,140 Q552,150 552,150 L530,150 Q530,150 541,140 Z"/>
+          <rect x="654" y="150" width="10" height="70" rx="2"/>
+          <path d="M659,140 Q670,150 670,150 L648,150 Q648,150 659,140 Z"/>
+        </g>
+      </svg>
+
+      <div class="hero-badge"><span class="pulse-dot"></span> <span data-i18n="hero.badge">Resmi Topluluk Sitesi</span></div>
+      <h1>Afghan Hangout</h1>
+      <p data-i18n="hero.desc">Roblox'un en sıcak topluluğuna hoş geldin. Haberleri takip et, önerilerini paylaş, arkadaşlarınla buluş.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" data-goto="news">
+          <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg>
+          <span data-i18n="hero.btnNews">Haberleri Gör</span>
+        </button>
+        <button class="btn btn-ghost" data-goto="feedback">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span data-i18n="hero.btnFeedback">Öneri Gönder</span>
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b id="statNews">0</b><span data-i18n="stats.news">Haber</span></div>
+        <div class="hero-stat"><b id="statFeedback">0</b><span data-i18n="stats.feedback">Öneri</span></div>
+        <div class="hero-stat"><b id="statUsers">0</b><span data-i18n="stats.users">Üye</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="news">
+    <div class="page-header">
+      <h1 data-i18n="news.title">Haberler</h1>
+      <p data-i18n="news.subtitle">Afghan Hangout dünyasından en son gelişmeler ve güncellemeler</p>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+
+    <div class="admin-hint">
+      <button class="admin-link" id="adminLink" title="">Afghan Hangout</button>
+    </div>
+  </section>
+
+  <section class="page" id="feedback">
+    <div class="page-header">
+      <h1 data-i18n="feedback.title">Şikayet &amp; Öneri</h1>
+      <p data-i18n="feedback.subtitle">Görüşlerin bizim için değerli — bize ulaştır, ekibimiz inceler</p>
+    </div>
+
+    <div class="feedback-layout">
+      <div class="panel">
+        <h2>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span data-i18n="feedback.panelTitle">Mesaj Gönder</span>
+        </h2>
+        <form id="feedbackForm" autocomplete="off">
+          <div class="field">
+            <label data-i18n="feedback.name">Adın (isteğe bağlı)</label>
+            <input type="text" id="fbName" maxlength="40" data-i18n-ph="feedback.namePlaceholder" placeholder="Örn: Ahmed">
+          </div>
+          <div class="field">
+            <label data-i18n="feedback.category">Kategori</label>
+            <select id="fbType">
+              <option value="suggestion" data-i18n="feedback.typeSuggestion">💡 Öneri</option>
+              <option value="complaint"  data-i18n="feedback.typeComplaint">⚠️ Şikayet</option>
+              <option value="objection"  data-i18n="feedback.typeObjection">📢 İtiraz</option>
+              <option value="other"      data-i18n="feedback.typeOther">📝 Diğer</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-i18n="feedback.message">Mesajın</label>
+            <textarea id="fbMessage" maxlength="800" data-i18n-ph="feedback.messagePlaceholder" placeholder="Düşüncelerini buraya yaz..." required></textarea>
+          </div>
+          <button class="submit-btn" type="submit" data-i18n="feedback.send">Gönder</button>
+          <div class="err-msg" id="fbErr"></div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span data-i18n="feedback.rulesTitle">Kurallar &amp; Bilgilendirme</span>
+        </h2>
+        <ul class="feedback-tips">
+          <li data-i18n="feedback.rule1">Mesajında küfür, hakaret veya tehdit içeren ifadeler kullanma.</li>
+          <li data-i18n="feedback.rule2">Kişisel bilgilerini (adres, telefon, şifre) paylaşma.</li>
+          <li data-i18n="feedback.rule3">Spam veya reklam amaçlı mesajlar dikkate alınmaz.</li>
+          <li data-i18n="feedback.rule4">Şikayetler oyun içi kullanıcı adı ile birlikte yazılırsa daha hızlı incelenir.</li>
+          <li data-i18n="feedback.rule5">Gönderdiğin her mesaj admin panelinde görüntülenir.</li>
+          <li data-i18n="feedback.rule6">Cevap süresi genelde 24–72 saat arasındadır.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="admin">
+    <div id="adminLocked" class="admin-locked">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <h2 data-i18n="admin.lockedTitle">Yönetici Girişi Gerekli</h2>
+      <p data-i18n="admin.lockedDesc">Bu bölüme erişmek için şifre doğrulaması yapmalısın.</p>
+      <button class="btn btn-primary" style="margin-top:20px" id="adminUnlockBtn" data-i18n="admin.unlockBtn">Şifre Gir</button>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <div class="page-header">
+        <h1 data-i18n="admin.title">Yönetici Paneli</h1>
+        <p data-i18n="admin.subtitle">Haberleri yönet ve gelen mesajları görüntüle</p>
+      </div>
+
+      <div class="admin-stats">
+        <div class="admin-stat"><b id="aNews">0</b><span data-i18n="stats.news">Haber</span></div>
+        <div class="admin-stat"><b id="aFeedback">0</b><span data-i18n="admin.messagesShort">Mesaj</span></div>
+        <div class="admin-stat"><b id="aUsers">0</b><span data-i18n="admin.usersShort">Kayıtlı Üye</span></div>
+      </div>
+
+      <div class="admin-grid">
+        <div class="panel">
+          <h2>
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <span data-i18n="admin.addNews">Yeni Haber Ekle</span>
+          </h2>
+          <form id="newsForm" autocomplete="off">
+            <div class="field">
+              <label data-i18n="admin.newsTitle">Başlık</label>
+              <input type="text" id="newsTitle" maxlength="120" data-i18n-ph="admin.newsTitlePh" required placeholder="Haber başlığı">
+            </div>
+            <div class="field">
+              <label data-i18n="admin.newsContent">İçerik</label>
+              <textarea id="newsContent" maxlength="2000" data-i18n-ph="admin.newsContentPh" required placeholder="Haber içeriği..."></textarea>
+            </div>
+            <button class="submit-btn" type="submit" data-i18n="admin.publish">Yayınla</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>
+            <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Z"/></svg>
+            <span data-i18n="admin.currentNews">Yayındaki Haberler</span>
+          </h2>
+          <div class="list" id="adminNewsList"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <h2>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span data-i18n="admin.messages">Gelen Mesajlar</span>
+        </h2>
+        <div class="list" id="adminFeedbackList"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © <span id="year"></span> <b>AFGHAN HANGOUT</b> — <span data-i18n="footer.text">Tüm hakları saklıdır. Roblox ile resmi bağlantısı yoktur.</span>
+</footer>
+
+<div class="modal-backdrop" id="authModal">
+  <div class="modal">
+    <button class="modal-close" data-close="authModal">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="m-icon">🏔️</div>
+      <h2 id="authTitle">Hoş Geldin</h2>
+      <p id="authSub">Hesabına giriş yap veya yeni hesap oluştur</p>
+    </div>
+    <div class="tabs">
+      <button id="tabLogin" class="active" data-i18n="auth.tabLogin">Giriş Yap</button>
+      <button id="tabRegister" data-i18n="auth.tabRegister">Kayıt Ol</button>
+    </div>
+
+    <form class="form-tab active" id="loginTab" autocomplete="off">
+      <div class="field">
+        <label data-i18n="auth.username">Kullanıcı Adı</label>
+        <input type="text" id="loginUser" maxlength="24" required data-i18n-ph="auth.userPh" placeholder="kullanici_adi">
+      </div>
+      <div class="field">
+        <label data-i18n="auth.password">Şifre</label>
+        <input type="password" id="loginPass" required data-i18n-ph="auth.passPh" placeholder="••••••••">
+      </div>
+      <button class="submit-btn" type="submit" data-i18n="auth.loginBtn">Giriş Yap</button>
+      <div class="err-msg" id="loginErr"></div>
+    </form>
+
+    <form class="form-tab" id="registerTab" autocomplete="off">
+      <div class="field">
+        <label data-i18n="auth.username">Kullanıcı Adı</label>
+        <input type="text" id="regUser" maxlength="24" required data-i18n-ph="auth.userRegPh" placeholder="en az 3 karakter">
+      </div>
+      <div class="field">
+        <label data-i18n="auth.password">Şifre</label>
+        <input type="password" id="regPass" required data-i18n-ph="auth.passRegPh" placeholder="en az 4 karakter">
+      </div>
+      <div class="field">
+        <label data-i18n="auth.passwordRepeat">Şifre Tekrar</label>
+        <input type="password" id="regPass2" required data-i18n-ph="auth.passRepeatPh" placeholder="şifreyi tekrar yaz">
+      </div>
+      <button class="submit-btn" type="submit" data-i18n="auth.registerBtn">Hesap Oluştur</button>
+      <div class="err-msg" id="regErr"></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="adminModal">
+  <div class="modal" style="max-width:380px">
+    <button class="modal-close" data-close="adminModal">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="m-icon" style="background:linear-gradient(135deg,#e0b354,#c8102e)">🔐</div>
+      <h2 data-i18n="adminAuth.title">Yönetici Girişi</h2>
+      <p data-i18n="adminAuth.subtitle">Devam etmek için şifreyi gir</p>
+    </div>
+    <form id="adminPassForm" autocomplete="off">
+      <div class="field">
+        <label data-i18n="adminAuth.password">Şifre</label>
+        <input type="password" id="adminPass" required data-i18n-ph="adminAuth.passPh" placeholder="••••••••">
+      </div>
+      <button class="submit-btn" type="submit" data-i18n="adminAuth.verify">Doğrula</button>
+      <div class="err-msg" id="adminErr"></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  const $  = (id) => document.getElementById(id);
+
+  /* =====================================================
+     ÇEVİRİLER
+     ===================================================== */
+  const TRANSLATIONS = {
+    tr: {
+      'logo.subtitle': 'Roblox Resmi Site',
+      'nav.home': 'Ana Sayfa',
+      'nav.news': 'Haberler',
+      'nav.feedback': 'Şikayet & Öneri',
+      'hero.badge': 'Resmi Topluluk Sitesi',
+      'hero.desc': 'Roblox\'un en sıcak topluluğuna hoş geldin. Haberleri takip et, önerilerini paylaş, arkadaşlarınla buluş.',
+      'hero.btnNews': 'Haberleri Gör',
+      'hero.btnFeedback': 'Öneri Gönder',
+      'stats.news': 'Haber',
+      'stats.feedback': 'Öneri',
+      'stats.users': 'Üye',
+      'news.title': 'Haberler',
+      'news.subtitle': 'Afghan Hangout dünyasından en son gelişmeler ve güncellemeler',
+      'news.badge': 'HABER',
+      'news.author': 'Yazar',
+      'news.empty': 'Henüz haber yok. Yakında burada olacak!',
+      'feedback.title': 'Şikayet & Öneri',
+      'feedback.subtitle': 'Görüşlerin bizim için değerli — bize ulaştır, ekibimiz inceler',
+      'feedback.panelTitle': 'Mesaj Gönder',
+      'feedback.name': 'Adın (isteğe bağlı)',
+      'feedback.namePlaceholder': 'Örn: Ahmed',
+      'feedback.category': 'Kategori',
+      'feedback.typeSuggestion': '💡 Öneri',
+      'feedback.typeComplaint': '⚠️ Şikayet',
+      'feedback.typeObjection': '📢 İtiraz',
+      'feedback.typeOther': '📝 Diğer',
+      'feedback.message': 'Mesajın',
+      'feedback.messagePlaceholder': 'Düşüncelerini buraya yaz...',
+      'feedback.send': 'Gönder',
+      'feedback.rulesTitle': 'Kurallar & Bilgilendirme',
+      'feedback.rule1': 'Mesajında küfür, hakaret veya tehdit içeren ifadeler kullanma.',
+      'feedback.rule2': 'Kişisel bilgilerini (adres, telefon, şifre) paylaşma.',
+      'feedback.rule3': 'Spam veya reklam amaçlı mesajlar dikkate alınmaz.',
+      'feedback.rule4': 'Şikayetler oyun içi kullanıcı adı ile birlikte yazılırsa daha hızlı incelenir.',
+      'feedback.rule5': 'Gönderdiğin her mesaj admin panelinde görüntülenir.',
+      'feedback.rule6': 'Cevap süresi genelde 24–72 saat arasındadır.',
+      'admin.lockedTitle': 'Yönetici Girişi Gerekli',
+      'admin.lockedDesc': 'Bu bölüme erişmek için şifre doğrulaması yapmalısın.',
+      'admin.unlockBtn': 'Şifre Gir',
+      'admin.title': 'Yönetici Paneli',
+      'admin.subtitle': 'Haberleri yönet ve gelen mesajları görüntüle',
+      'admin.messagesShort': 'Mesaj',
+      'admin.usersShort': 'Kayıtlı Üye',
+      'admin.addNews': 'Yeni Haber Ekle',
+      'admin.newsTitle': 'Başlık',
+      'admin.newsTitlePh': 'Haber başlığı',
+      'admin.newsContent': 'İçerik',
+      'admin.newsContentPh': 'Haber içeriği...',
+      'admin.publish': 'Yayınla',
+      'admin.currentNews': 'Yayındaki Haberler',
+      'admin.messages': 'Gelen Mesajlar',
+      'admin.noNews': 'Henüz haber yok.',
+      'admin.noMessages': 'Henüz mesaj yok.',
+      'auth.tabLogin': 'Giriş Yap',
+      'auth.tabRegister': 'Kayıt Ol',
+      'auth.username': 'Kullanıcı Adı',
+      'auth.password': 'Şifre',
+      'auth.passwordRepeat': 'Şifre Tekrar',
+      'auth.userPh': 'kullanici_adi',
+      'auth.passPh': '••••••••',
+      'auth.userRegPh': 'en az 3 karakter',
+      'auth.passRegPh': 'en az 4 karakter',
+      'auth.passRepeatPh': 'şifreyi tekrar yaz',
+      'auth.loginBtn': 'Giriş Yap',
+      'auth.registerBtn': 'Hesap Oluştur',
+      'auth.welcome': 'Hoş Geldin',
+      'auth.welcomeSub': 'Hesabına giriş yap veya yeni hesap oluştur',
+      'auth.registerTitle': 'Hesap Oluştur',
+      'auth.registerSub': 'Yeni hesabınla topluluğa katıl',
+      'adminAuth.title': 'Yönetici Girişi',
+      'adminAuth.subtitle': 'Devam etmek için şifreyi gir',
+      'adminAuth.password': 'Şifre',
+      'adminAuth.passPh': '••••••••',
+      'adminAuth.verify': 'Doğrula',
+      'footer.text': 'Tüm hakları saklıdır. Roblox ile resmi bağlantısı yoktur.',
+      'dd.guest': 'Misafir',
+      'dd.notLoggedIn': 'Giriş yapılmadı',
+      'dd.loggedIn': 'Giriş yapıldı',
+      'dd.login': 'Giriş Yap',
+      'dd.register': 'Kayıt Ol',
+      'dd.logout': 'Çıkış Yap',
+      'dd.news': 'Haberler',
+      'toast.logout': 'Çıkış yapıldı',
+      'toast.registered': 'Hesap oluşturuldu. Hoş geldin',
+      'toast.loginOk': 'Giriş başarılı. Hoş geldin',
+      'toast.fbSent': 'Mesajın alındı, teşekkürler!',
+      'toast.adminOk': 'Yönetici olarak giriş yapıldı',
+      'toast.adminErr': 'Şifre yanlış',
+      'toast.newsPublished': 'Haber yayınlandı',
+      'toast.newsDeleted': 'Haber silindi',
+      'toast.msgDeleted': 'Mesaj silindi',
+      'toast.needTitleContent': 'Başlık ve içerik gerekli',
+      'toast.confirmDelNews': 'Bu haberi silmek istediğine emin misin?',
+      'err.userShort': 'Kullanıcı adı en az 3 karakter olmalı.',
+      'err.passShort': 'Şifre en az 4 karakter olmalı.',
+      'err.passMismatch': 'Şifreler eşleşmiyor.',
+      'err.userTaken': 'Bu kullanıcı adı zaten alınmış.',
+      'err.userNotFound': 'Kullanıcı bulunamadı.',
+      'err.passWrong': 'Şifre yanlış.',
+      'err.msgShort': 'Mesajın en az 5 karakter olmalı.',
+      'lang.saved': 'Dil değiştirildi'
+    },
+    en: {
+      'logo.subtitle': 'Official Roblox Site',
+      'nav.home': 'Home', 'nav.news': 'News', 'nav.feedback': 'Complaints & Suggestions',
+      'hero.badge': 'Official Community Site',
+      'hero.desc': 'Welcome to the warmest Roblox community. Follow news, share suggestions, meet friends.',
+      'hero.btnNews': 'See News', 'hero.btnFeedback': 'Send Suggestion',
+      'stats.news': 'News', 'stats.feedback': 'Suggestions', 'stats.users': 'Members',
+      'news.title': 'News', 'news.subtitle': 'Latest developments and updates from the Afghan Hangout world',
+      'news.badge': 'NEWS', 'news.author': 'Author', 'news.empty': 'No news yet. Coming soon!',
+      'feedback.title': 'Complaints & Suggestions',
+      'feedback.subtitle': 'Your opinion matters — send it to us, our team reviews it',
+      'feedback.panelTitle': 'Send a Message', 'feedback.name': 'Your Name (optional)',
+      'feedback.namePlaceholder': 'e.g. Ahmed', 'feedback.category': 'Category',
+      'feedback.typeSuggestion': '💡 Suggestion', 'feedback.typeComplaint': '⚠️ Complaint',
+      'feedback.typeObjection': '📢 Objection', 'feedback.typeOther': '📝 Other',
+      'feedback.message': 'Your Message', 'feedback.messagePlaceholder': 'Write your thoughts here...',
+      'feedback.send': 'Send', 'feedback.rulesTitle': 'Rules & Information',
+      'feedback.rule1': 'Do not use profanity, insults or threats in your message.',
+      'feedback.rule2': 'Do not share personal information (address, phone, password).',
+      'feedback.rule3': 'Spam or advertising messages will be ignored.',
+      'feedback.rule4': 'Complaints written with the in-game username are handled faster.',
+      'feedback.rule5': 'Every message you send is visible in the admin panel.',
+      'feedback.rule6': 'Response time is usually 24–72 hours.',
+      'admin.lockedTitle': 'Administrator Login Required',
+      'admin.lockedDesc': 'You must verify the password to access this section.',
+      'admin.unlockBtn': 'Enter Password', 'admin.title': 'Admin Panel',
+      'admin.subtitle': 'Manage news and view incoming messages',
+      'admin.messagesShort': 'Messages', 'admin.usersShort': 'Registered Users',
+      'admin.addNews': 'Add News', 'admin.newsTitle': 'Title', 'admin.newsTitlePh': 'News title',
+      'admin.newsContent': 'Content', 'admin.newsContentPh': 'News content...',
+      'admin.publish': 'Publish', 'admin.currentNews': 'Published News',
+      'admin.messages': 'Incoming Messages', 'admin.noNews': 'No news yet.', 'admin.noMessages': 'No messages yet.',
+      'auth.tabLogin': 'Login', 'auth.tabRegister': 'Register',
+      'auth.username': 'Username', 'auth.password': 'Password', 'auth.passwordRepeat': 'Repeat Password',
+      'auth.userPh': 'username', 'auth.passPh': '••••••••',
+      'auth.userRegPh': 'at least 3 characters', 'auth.passRegPh': 'at least 4 characters',
+      'auth.passRepeatPh': 'repeat password', 'auth.loginBtn': 'Login', 'auth.registerBtn': 'Create Account',
+      'auth.welcome': 'Welcome', 'auth.welcomeSub': 'Log in to your account or create a new one',
+      'auth.registerTitle': 'Create Account', 'auth.registerSub': 'Join the community with your new account',
+      'adminAuth.title': 'Admin Login', 'adminAuth.subtitle': 'Enter the password to continue',
+      'adminAuth.password': 'Password', 'adminAuth.passPh': '••••••••', 'adminAuth.verify': 'Verify',
+      'footer.text': 'All rights reserved. Not officially affiliated with Roblox.',
+      'dd.guest': 'Guest', 'dd.notLoggedIn': 'Not logged in', 'dd.loggedIn': 'Logged in',
+      'dd.login': 'Login', 'dd.register': 'Register', 'dd.logout': 'Logout', 'dd.news': 'News',
+      'toast.logout': 'Logged out', 'toast.registered': 'Account created. Welcome',
+      'toast.loginOk': 'Login successful. Welcome', 'toast.fbSent': 'Your message was received, thanks!',
+      'toast.adminOk': 'Logged in as administrator', 'toast.adminErr': 'Wrong password',
+      'toast.newsPublished': 'News published', 'toast.newsDeleted': 'News deleted', 'toast.msgDeleted': 'Message deleted',
+      'toast.needTitleContent': 'Title and content are required', 'toast.confirmDelNews': 'Are you sure you want to delete this news?',
+      'err.userShort': 'Username must be at least 3 characters.', 'err.passShort': 'Password must be at least 4 characters.',
+      'err.passMismatch': 'Passwords do not match.', 'err.userTaken': 'This username is already taken.',
+      'err.userNotFound': 'User not found.', 'err.passWrong': 'Wrong password.', 'err.msgShort': 'Message must be at least 5 characters.',
+      'lang.saved': 'Language changed'
+    },
+    fa: {
+      'logo.subtitle': 'سایت رسمی روبلاکس', 'nav.home': 'خانه', 'nav.news': 'اخبار', 'nav.feedback': 'شکایت و پیشنهاد',
+      'hero.badge': 'سایت رسمی انجمن',
+      'hero.desc': 'به گرم‌ترین انجمن روبلاکس خوش آمدید. اخبار را دنبال کنید، پیشنهادهایتان را بفرستید، با دوستان ملاقات کنید.',
+      'hero.btnNews': 'دیدن اخبار', 'hero.btnFeedback': 'ارسال پیشنهاد',
+      'stats.news': 'خبر', 'stats.feedback': 'پیشنهاد', 'stats.users': 'عضو',
+      'news.title': 'اخبار', 'news.subtitle': 'آخرین تحولات و به‌روزرسانی‌ها از دنیای افغان هانگوت',
+      'news.badge': 'خبر', 'news.author': 'نویسنده', 'news.empty': 'هنوز خبری نیست. به زودی!',
+      'feedback.title': 'شکایت و پیشنهاد', 'feedback.subtitle': 'نظر شما برای ما ارزشمند است — بفرستید، تیم ما بررسی می‌کند',
+      'feedback.panelTitle': 'ارسال پیام', 'feedback.name': 'نام شما (اختیاری)',
+      'feedback.namePlaceholder': 'مثلا: احمد', 'feedback.category': 'دسته‌بندی',
+      'feedback.typeSuggestion': '💡 پیشنهاد', 'feedback.typeComplaint': '⚠️ شکایت',
+      'feedback.typeObjection': '📢 اعتراض', 'feedback.typeOther': '📝 دیگر',
+      'feedback.message': 'پیام شما', 'feedback.messagePlaceholder': 'افکار خود را اینجا بنویسید...',
+      'feedback.send': 'ارسال', 'feedback.rulesTitle': 'قوانین و اطلاعات',
+      'feedback.rule1': 'از فحش، توهین یا تهدید در پیام خود استفاده نکنید.',
+      'feedback.rule2': 'اطلاعات شخصی (آدرس، تلفن، رمز عبور) را به اشتراک نگذارید.',
+      'feedback.rule3': 'پیام‌های اسپم یا تبلیغاتی نادیده گرفته می‌شوند.',
+      'feedback.rule4': 'شکایات با نام کاربری داخل بازی سریع‌تر بررسی می‌شوند.',
+      'feedback.rule5': 'هر پیامی که می‌فرستید در پنل مدیر نمایش داده می‌شود.',
+      'feedback.rule6': 'زمان پاسخ معمولاً بین ۲۴ تا ۷۲ ساعت است.',
+      'admin.lockedTitle': 'ورود مدیر لازم است', 'admin.lockedDesc': 'برای دسترسی به این بخش باید رمز عبور را تأیید کنید.',
+      'admin.unlockBtn': 'ورود رمز', 'admin.title': 'پنل مدیریت', 'admin.subtitle': 'مدیریت اخبار و مشاهده پیام‌های دریافتی',
+      'admin.messagesShort': 'پیام', 'admin.usersShort': 'کاربران ثبت‌شده',
+      'admin.addNews': 'افزودن خبر', 'admin.newsTitle': 'عنوان', 'admin.newsTitlePh': 'عنوان خبر',
+      'admin.newsContent': 'محتوا', 'admin.newsContentPh': 'محتوای خبر...', 'admin.publish': 'انتشار',
+      'admin.currentNews': 'اخبار منتشرشده', 'admin.messages': 'پیام‌های دریافتی',
+      'admin.noNews': 'هنوز خبری نیست.', 'admin.noMessages': 'هنوز پیامی نیست.',
+      'auth.tabLogin': 'ورود', 'auth.tabRegister': 'ثبت‌نام', 'auth.username': 'نام کاربری',
+      'auth.password': 'رمز عبور', 'auth.passwordRepeat': 'تکرار رمز عبور',
+      'auth.userPh': 'نام_کاربری', 'auth.passPh': '••••••••',
+      'auth.userRegPh': 'حداقل ۳ کاراکتر', 'auth.passRegPh': 'حداقل ۴ کاراکتر',
+      'auth.passRepeatPh': 'رمز عبور را تکرار کنید', 'auth.loginBtn': 'ورود', 'auth.registerBtn': 'ایجاد حساب',
+      'auth.welcome': 'خوش آمدید', 'auth.welcomeSub': 'به حساب خود وارد شوید یا حساب جدید بسازید',
+      'auth.registerTitle': 'ایجاد حساب', 'auth.registerSub': 'با حساب جدید به انجمن بپیوندید',
+      'adminAuth.title': 'ورود مدیر', 'adminAuth.subtitle': 'برای ادامه رمز عبور را وارد کنید',
+      'adminAuth.password': 'رمز عبور', 'adminAuth.passPh': '••••••••', 'adminAuth.verify': 'تأیید',
+      'footer.text': 'تمامی حقوق محفوظ است. وابسته رسمی به روبلاکس نیست.',
+      'dd.guest': 'مهمان', 'dd.notLoggedIn': 'وارد نشده', 'dd.loggedIn': 'وارد شده',
+      'dd.login': 'ورود', 'dd.register': 'ثبت‌نام', 'dd.logout': 'خروج', 'dd.news': 'اخبار',
+      'toast.logout': 'خارج شدید', 'toast.registered': 'حساب ساخته شد. خوش آمدید',
+      'toast.loginOk': 'ورود موفق. خوش آمدید', 'toast.fbSent': 'پیام شما دریافت شد، متشکریم!',
+      'toast.adminOk': 'به عنوان مدیر وارد شدید', 'toast.adminErr': 'رمز اشتباه است',
+      'toast.newsPublished': 'خبر منتشر شد', 'toast.newsDeleted': 'خبر حذف شد', 'toast.msgDeleted': 'پیام حذف شد',
+      'toast.needTitleContent': 'عنوان و محتوا لازم است', 'toast.confirmDelNews': 'آیا مطمئن هستید که این خبر را حذف کنید؟',
+      'err.userShort': 'نام کاربری باید حداقل ۳ کاراکتر باشد.', 'err.passShort': 'رمز عبور باید حداقل ۴ کاراکتر باشد.',
+      'err.passMismatch': 'رمزها مطابقت ندارند.', 'err.userTaken': 'این نام کاربری قبلاً گرفته شده.',
+      'err.userNotFound': 'کاربر یافت نشد.', 'err.passWrong': 'رمز عبور اشتباه است.', 'err.msgShort': 'پیام باید حداقل ۵ کاراکتر باشد.',
+      'lang.saved': 'زبان تغییر کرد'
+    },
+    fr: {
+      'logo.subtitle': 'Site Officiel Roblox', 'nav.home': 'Accueil', 'nav.news': 'Actualités', 'nav.feedback': 'Plaintes & Suggestions',
+      'hero.badge': 'Site Officiel de la Communauté',
+      'hero.desc': 'Bienvenue dans la communauté Roblox la plus chaleureuse. Suivez les actualités, partagez vos suggestions, retrouvez vos amis.',
+      'hero.btnNews': 'Voir les Actualités', 'hero.btnFeedback': 'Envoyer une Suggestion',
+      'stats.news': 'Actualités', 'stats.feedback': 'Suggestions', 'stats.users': 'Membres',
+      'news.title': 'Actualités', 'news.subtitle': 'Derniers développements et mises à jour du monde Afghan Hangout',
+      'news.badge': 'ACTU', 'news.author': 'Auteur', 'news.empty': 'Pas encore d\'actualités. Bientôt !',
+      'feedback.title': 'Plaintes & Suggestions', 'feedback.subtitle': 'Votre avis compte — envoyez-le-nous, notre équipe l\'examine',
+      'feedback.panelTitle': 'Envoyer un Message', 'feedback.name': 'Votre Nom (facultatif)',
+      'feedback.namePlaceholder': 'ex : Ahmed', 'feedback.category': 'Catégorie',
+      'feedback.typeSuggestion': '💡 Suggestion', 'feedback.typeComplaint': '⚠️ Plainte',
+      'feedback.typeObjection': '📢 Objection', 'feedback.typeOther': '📝 Autre',
+      'feedback.message': 'Votre Message', 'feedback.messagePlaceholder': 'Écrivez vos pensées ici...',
+      'feedback.send': 'Envoyer', 'feedback.rulesTitle': 'Règles & Informations',
+      'feedback.rule1': 'N\'utilisez pas d\'insultes, de menaces dans votre message.',
+      'feedback.rule2': 'Ne partagez pas vos informations personnelles (adresse, téléphone, mot de passe).',
+      'feedback.rule3': 'Les messages de spam ou publicitaires seront ignorés.',
+      'feedback.rule4': 'Les plaintes avec le nom d\'utilisateur en jeu sont traitées plus rapidement.',
+      'feedback.rule5': 'Chaque message que vous envoyez apparaît dans le panneau admin.',
+      'feedback.rule6': 'Le délai de réponse est généralement de 24 à 72 heures.',
+      'admin.lockedTitle': 'Connexion Administrateur Requise',
+      'admin.lockedDesc': 'Vous devez vérifier le mot de passe pour accéder à cette section.',
+      'admin.unlockBtn': 'Entrer le Mot de Passe', 'admin.title': 'Panneau Admin',
+      'admin.subtitle': 'Gérez les actualités et consultez les messages reçus',
+      'admin.messagesShort': 'Messages', 'admin.usersShort': 'Utilisateurs Inscrits',
+      'admin.addNews': 'Ajouter une Actualité', 'admin.newsTitle': 'Titre',
+      'admin.newsTitlePh': 'Titre de l\'actualité', 'admin.newsContent': 'Contenu',
+      'admin.newsContentPh': 'Contenu de l\'actualité...', 'admin.publish': 'Publier',
+      'admin.currentNews': 'Actualités Publiées', 'admin.messages': 'Messages Reçus',
+      'admin.noNews': 'Pas encore d\'actualités.', 'admin.noMessages': 'Pas encore de messages.',
+      'auth.tabLogin': 'Connexion', 'auth.tabRegister': 'S\'inscrire', 'auth.username': 'Nom d\'utilisateur',
+      'auth.password': 'Mot de passe', 'auth.passwordRepeat': 'Répéter le mot de passe',
+      'auth.userPh': 'nom_utilisateur', 'auth.passPh': '••••••••',
+      'auth.userRegPh': 'au moins 3 caractères', 'auth.passRegPh': 'au moins 4 caractères',
+      'auth.passRepeatPh': 'répétez le mot de passe', 'auth.loginBtn': 'Se Connecter', 'auth.registerBtn': 'Créer un Compte',
+      'auth.welcome': 'Bienvenue', 'auth.welcomeSub': 'Connectez-vous à votre compte ou créez-en un nouveau',
+      'auth.registerTitle': 'Créer un Compte', 'auth.registerSub': 'Rejoignez la communauté avec votre nouveau compte',
+      'adminAuth.title': 'Connexion Admin', 'adminAuth.subtitle': 'Entrez le mot de passe pour continuer',
+      'adminAuth.password': 'Mot de passe', 'adminAuth.passPh': '••••••••', 'adminAuth.verify': 'Vérifier',
+      'footer.text': 'Tous droits réservés. Non affilié officiellement à Roblox.',
+      'dd.guest': 'Invité', 'dd.notLoggedIn': 'Non connecté', 'dd.loggedIn': 'Connecté',
+      'dd.login': 'Connexion', 'dd.register': 'S\'inscrire', 'dd.logout': 'Déconnexion', 'dd.news': 'Actualités',
+      'toast.logout': 'Déconnecté', 'toast.registered': 'Compte créé. Bienvenue',
+      'toast.loginOk': 'Connexion réussie. Bienvenue', 'toast.fbSent': 'Votre message a été reçu, merci !',
+      'toast.adminOk': 'Connecté en tant qu\'administrateur', 'toast.adminErr': 'Mot de passe incorrect',
+      'toast.newsPublished': 'Actualité publiée', 'toast.newsDeleted': 'Actualité supprimée', 'toast.msgDeleted': 'Message supprimé',
+      'toast.needTitleContent': 'Titre et contenu requis', 'toast.confirmDelNews': 'Êtes-vous sûr de vouloir supprimer cette actualité ?',
+      'err.userShort': 'Le nom d\'utilisateur doit comporter au moins 3 caractères.',
+      'err.passShort': 'Le mot de passe doit comporter au moins 4 caractères.',
+      'err.passMismatch': 'Les mots de passe ne correspondent pas.',
+      'err.userTaken': 'Ce nom d\'utilisateur est déjà pris.', 'err.userNotFound': 'Utilisateur introuvable.',
+      'err.passWrong': 'Mot de passe incorrect.', 'err.msgShort': 'Le message doit comporter au moins 5 caractères.',
+      'lang.saved': 'Langue changée'
+    },
+    de: {
+      'logo.subtitle': 'Offizielle Roblox-Seite', 'nav.home': 'Startseite', 'nav.news': 'Nachrichten', 'nav.feedback': 'Beschwerden & Vorschläge',
+      'hero.badge': 'Offizielle Community-Seite',
+      'hero.desc': 'Willkommen in der wärmsten Roblox-Community. Verfolge Neuigkeiten, teile Vorschläge, triff Freunde.',
+      'hero.btnNews': 'Nachrichten Ansehen', 'hero.btnFeedback': 'Vorschlag Senden',
+      'stats.news': 'Nachrichten', 'stats.feedback': 'Vorschläge', 'stats.users': 'Mitglieder',
+      'news.title': 'Nachrichten', 'news.subtitle': 'Neueste Entwicklungen und Updates aus der Afghan-Hangout-Welt',
+      'news.badge': 'NEWS', 'news.author': 'Autor', 'news.empty': 'Noch keine Nachrichten. Bald!',
+      'feedback.title': 'Beschwerden & Vorschläge', 'feedback.subtitle': 'Deine Meinung ist uns wichtig — sende sie uns, unser Team prüft sie',
+      'feedback.panelTitle': 'Nachricht Senden', 'feedback.name': 'Dein Name (optional)',
+      'feedback.namePlaceholder': 'z.B. Ahmed', 'feedback.category': 'Kategorie',
+      'feedback.typeSuggestion': '💡 Vorschlag', 'feedback.typeComplaint': '⚠️ Beschwerde',
+      'feedback.typeObjection': '📢 Einspruch', 'feedback.typeOther': '📝 Sonstiges',
+      'feedback.message': 'Deine Nachricht', 'feedback.messagePlaceholder': 'Schreibe deine Gedanken hier...',
+      'feedback.send': 'Senden', 'feedback.rulesTitle': 'Regeln & Informationen',
+      'feedback.rule1': 'Verwende keine Beleidigungen, Beschimpfungen oder Drohungen.',
+      'feedback.rule2': 'Teile keine persönlichen Daten (Adresse, Telefon, Passwort).',
+      'feedback.rule3': 'Spam- oder Werbenachrichten werden ignoriert.',
+      'feedback.rule4': 'Beschwerden mit In-Game-Benutzernamen werden schneller bearbeitet.',
+      'feedback.rule5': 'Jede Nachricht, die du sendest, erscheint im Admin-Panel.',
+      'feedback.rule6': 'Antwortzeit ist normalerweise 24–72 Stunden.',
+      'admin.lockedTitle': 'Administrator-Anmeldung Erforderlich',
+      'admin.lockedDesc': 'Du musst das Passwort bestätigen, um auf diesen Bereich zuzugreifen.',
+      'admin.unlockBtn': 'Passwort Eingeben', 'admin.title': 'Admin-Panel',
+      'admin.subtitle': 'Verwalte Nachrichten und sieh eingehende Nachrichten',
+      'admin.messagesShort': 'Nachrichten', 'admin.usersShort': 'Registrierte Nutzer',
+      'admin.addNews': 'Nachricht Hinzufügen', 'admin.newsTitle': 'Titel',
+      'admin.newsTitlePh': 'Nachrichtentitel', 'admin.newsContent': 'Inhalt',
+      'admin.newsContentPh': 'Nachrichteninhalt...', 'admin.publish': 'Veröffentlichen',
+      'admin.currentNews': 'Veröffentlichte Nachrichten', 'admin.messages': 'Eingehende Nachrichten',
+      'admin.noNews': 'Noch keine Nachrichten.', 'admin.noMessages': 'Noch keine Nachrichten.',
+      'auth.tabLogin': 'Anmelden', 'auth.tabRegister': 'Registrieren', 'auth.username': 'Benutzername',
+      'auth.password': 'Passwort', 'auth.passwordRepeat': 'Passwort Wiederholen',
+      'auth.userPh': 'benutzername', 'auth.passPh': '••••••••',
+      'auth.userRegPh': 'mindestens 3 Zeichen', 'auth.passRegPh': 'mindestens 4 Zeichen',
+      'auth.passRepeatPh': 'Passwort wiederholen', 'auth.loginBtn': 'Anmelden', 'auth.registerBtn': 'Konto Erstellen',
+      'auth.welcome': 'Willkommen', 'auth.welcomeSub': 'Melde dich an oder erstelle ein neues Konto',
+      'auth.registerTitle': 'Konto Erstellen', 'auth.registerSub': 'Tritt der Community mit deinem neuen Konto bei',
+      'adminAuth.title': 'Admin-Anmeldung', 'adminAuth.subtitle': 'Gib das Passwort ein, um fortzufahren',
+      'adminAuth.password': 'Passwort', 'adminAuth.passPh': '••••••••', 'adminAuth.verify': 'Bestätigen',
+      'footer.text': 'Alle Rechte vorbehalten. Nicht offiziell mit Roblox verbunden.',
+      'dd.guest': 'Gast', 'dd.notLoggedIn': 'Nicht angemeldet', 'dd.loggedIn': 'Angemeldet',
+      'dd.login': 'Anmelden', 'dd.register': 'Registrieren', 'dd.logout': 'Abmelden', 'dd.news': 'Nachrichten',
+      'toast.logout': 'Abgemeldet', 'toast.registered': 'Konto erstellt. Willkommen',
+      'toast.loginOk': 'Anmeldung erfolgreich. Willkommen', 'toast.fbSent': 'Deine Nachricht wurde empfangen, danke!',
+      'toast.adminOk': 'Als Administrator angemeldet', 'toast.adminErr': 'Falsches Passwort',
+      'toast.newsPublished': 'Nachricht veröffentlicht', 'toast.newsDeleted': 'Nachricht gelöscht', 'toast.msgDeleted': 'Nachricht gelöscht',
+      'toast.needTitleContent': 'Titel und Inhalt erforderlich', 'toast.confirmDelNews': 'Möchtest du diese Nachricht wirklich löschen?',
+      'err.userShort': 'Der Benutzername muss mindestens 3 Zeichen lang sein.',
+      'err.passShort': 'Das Passwort muss mindestens 4 Zeichen lang sein.',
+      'err.passMismatch': 'Passwörter stimmen nicht überein.',
+      'err.userTaken': 'Dieser Benutzername ist bereits vergeben.', 'err.userNotFound': 'Benutzer nicht gefunden.',
+      'err.passWrong': 'Falsches Passwort.', 'err.msgShort': 'Die Nachricht muss mindestens 5 Zeichen lang sein.',
+      'lang.saved': 'Sprache geändert'
+    },
+    nl: {
+      'logo.subtitle': 'Officiële Roblox-site', 'nav.home': 'Home', 'nav.news': 'Nieuws', 'nav.feedback': 'Klachten & Suggesties',
+      'hero.badge': 'Officiële Community-site',
+      'hero.desc': 'Welkom bij de warmste Roblox-community. Volg nieuws, deel suggesties, ontmoet vrienden.',
+      'hero.btnNews': 'Bekijk Nieuws', 'hero.btnFeedback': 'Suggestie Versturen',
+      'stats.news': 'Nieuws', 'stats.feedback': 'Suggesties', 'stats.users': 'Leden',
+      'news.title': 'Nieuws', 'news.subtitle': 'Laatste ontwikkelingen en updates uit de Afghan Hangout-wereld',
+      'news.badge': 'NIEUWS', 'news.author': 'Auteur', 'news.empty': 'Nog geen nieuws. Binnenkort!',
+      'feedback.title': 'Klachten & Suggesties', 'feedback.subtitle': 'Jouw mening is belangrijk — stuur het naar ons, ons team bekijkt het',
+      'feedback.panelTitle': 'Bericht Versturen', 'feedback.name': 'Je Naam (optioneel)',
+      'feedback.namePlaceholder': 'bv. Ahmed', 'feedback.category': 'Categorie',
+      'feedback.typeSuggestion': '💡 Suggestie', 'feedback.typeComplaint': '⚠️ Klacht',
+      'feedback.typeObjection': '📢 Bezwaar', 'feedback.typeOther': '📝 Anders',
+      'feedback.message': 'Je Bericht', 'feedback.messagePlaceholder': 'Schrijf hier je gedachten...',
+      'feedback.send': 'Versturen', 'feedback.rulesTitle': 'Regels & Informatie',
+      'feedback.rule1': 'Gebruik geen godslastering, beledigingen of bedreigingen in je bericht.',
+      'feedback.rule2': 'Deel geen persoonlijke informatie (adres, telefoon, wachtwoord).',
+      'feedback.rule3': 'Spam- of advertentieberichten worden genegeerd.',
+      'feedback.rule4': 'Klachten met de in-game gebruikersnaam worden sneller behandeld.',
+      'feedback.rule5': 'Elk bericht dat je stuurt, is zichtbaar in het admin-paneel.',
+      'feedback.rule6': 'Reactietijd is meestal 24–72 uur.',
+      'admin.lockedTitle': 'Beheerderslogin Vereist',
+      'admin.lockedDesc': 'Je moet het wachtwoord verifiëren om toegang te krijgen tot dit gedeelte.',
+      'admin.unlockBtn': 'Wachtwoord Invoeren', 'admin.title': 'Beheerderspaneel',
+      'admin.subtitle': 'Beheer nieuws en bekijk inkomende berichten',
+      'admin.messagesShort': 'Berichten', 'admin.usersShort': 'Geregistreerde Gebruikers',
+      'admin.addNews': 'Nieuws Toevoegen', 'admin.newsTitle': 'Titel',
+      'admin.newsTitlePh': 'Nieuwstitel', 'admin.newsContent': 'Inhoud',
+      'admin.newsContentPh': 'Nieuwsinhoud...', 'admin.publish': 'Publiceren',
+      'admin.currentNews': 'Gepubliceerd Nieuws', 'admin.messages': 'Inkomende Berichten',
+      'admin.noNews': 'Nog geen nieuws.', 'admin.noMessages': 'Nog geen berichten.',
+      'auth.tabLogin': 'Inloggen', 'auth.tabRegister': 'Registreren', 'auth.username': 'Gebruikersnaam',
+      'auth.password': 'Wachtwoord', 'auth.passwordRepeat': 'Wachtwoord Herhalen',
+      'auth.userPh': 'gebruikersnaam', 'auth.passPh': '••••••••',
+      'auth.userRegPh': 'minimaal 3 tekens', 'auth.passRegPh': 'minimaal 4 tekens',
+      'auth.passRepeatPh': 'herhaal wachtwoord', 'auth.loginBtn': 'Inloggen', 'auth.registerBtn': 'Account Aanmaken',
+      'auth.welcome': 'Welkom', 'auth.welcomeSub': 'Log in op je account of maak een nieuwe aan',
+      'auth.registerTitle': 'Account Aanmaken', 'auth.registerSub': 'Word lid van de community met je nieuwe account',
+      'adminAuth.title': 'Beheerderslogin', 'adminAuth.subtitle': 'Voer het wachtwoord in om door te gaan',
+      'adminAuth.password': 'Wachtwoord', 'adminAuth.passPh': '••••••••', 'adminAuth.verify': 'Verifiëren',
+      'footer.text': 'Alle rechten voorbehouden. Niet officieel verbonden met Roblox.',
+      'dd.guest': 'Gast', 'dd.notLoggedIn': 'Niet ingelogd', 'dd.loggedIn': 'Ingelogd',
+      'dd.login': 'Inloggen', 'dd.register': 'Registreren', 'dd.logout': 'Uitloggen', 'dd.news': 'Nieuws',
+      'toast.logout': 'Uitgelogd', 'toast.registered': 'Account aangemaakt. Welkom',
+      'toast.loginOk': 'Inloggen geslaagd. Welkom', 'toast.fbSent': 'Je bericht is ontvangen, bedankt!',
+      'toast.adminOk': 'Ingelogd als beheerder', 'toast.adminErr': 'Verkeerd wachtwoord',
+      'toast.newsPublished': 'Nieuws gepubliceerd', 'toast.newsDeleted': 'Nieuws verwijderd', 'toast.msgDeleted': 'Bericht verwijderd',
+      'toast.needTitleContent': 'Titel en inhoud vereist', 'toast.confirmDelNews': 'Weet je zeker dat je dit nieuws wilt verwijderen?',
+      'err.userShort': 'Gebruikersnaam moet minimaal 3 tekens zijn.',
+      'err.passShort': 'Wachtwoord moet minimaal 4 tekens zijn.',
+      'err.passMismatch': 'Wachtwoorden komen niet overeen.',
+      'err.userTaken': 'Deze gebruikersnaam is al bezet.', 'err.userNotFound': 'Gebruiker niet gevonden.',
+      'err.passWrong': 'Verkeerd wachtwoord.', 'err.msgShort': 'Bericht moet minimaal 5 tekens zijn.',
+      'lang.saved': 'Taal gewijzigd'
+    }
+  };
+
+  const LANG_META = {
+    tr: { flag:'🇹🇷', code:'TR' }, en: { flag:'🇬🇧', code:'EN' }, fa: { flag:'🇦🇫', code:'FA' },
+    fr: { flag:'🇫🇷', code:'FR' }, de: { flag:'🇩🇪', code:'DE' }, nl: { flag:'🇳🇱', code:'NL' }
+  };
+
+  let currentLang = 'tr';
+  function t(key){ return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || key; }
+
+  function applyTranslations(){
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph'))); });
+
+    const meta = LANG_META[currentLang];
+    $('langFlag').textContent = meta.flag;
+    $('langCode').textContent = meta.code;
+
+    document.querySelectorAll('.lang-dropdown button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === currentLang);
+    });
+
+    renderDropdown();
+    renderNews();
+    renderAdmin();
+    renderAdminFeedback();
+    updateAuthModalTitles();
+  }
+
+  function setLanguage(lang){
+    if (!TRANSLATIONS[lang]) return;
+    currentLang = lang;
+    Store.set('ah_lang', lang);
+    applyTranslations();
+    playSuccess();
+    toast(t('lang.saved'), 'success');
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+    ));
+  }
+  function formatDate(ts){
+    try{
+      const d = new Date(ts);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      return `${dd}.${mm}.${d.getFullYear()}`;
+    }catch(e){ return ''; }
+  }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function hash(str){
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) + str.charCodeAt(i);
+    return (h >>> 0).toString(36);
+  }
+
+  const Store = {
+    get(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e){ return def; } },
+    set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  };
+
+  const DEFAULT_NEWS = [
+    { id:'n1', title:'Afghan Hangout Resmi Sitesi Yayında!',
+      content:'Sunucumuzun tüm haberlerini, etkinliklerini ve güncellemelerini artık buradan takip edebilirsiniz. Hoş geldiniz!',
+      date: Date.now(), author:'Admin' },
+    { id:'n2', title:'Yeni Harita: Kabil Çarşısı',
+      content:'Kabil Çarşısı haritamız oyuna eklendi. Geleneksel dükkanlar, halılar ve çay evleriyle dolu bu haritayı keşfedin!',
+      date: Date.now() - 86400000, author:'Admin' }
+  ];
+
+  let users       = Store.get('ah_users', []);
+  let currentUser = Store.get('ah_current', null);
+  let news        = Store.get('ah_news', null);
+  let feedback    = Store.get('ah_feedback', []);
+  let adminOk     = false;
+
+  if (!Array.isArray(news)) { news = DEFAULT_NEWS.slice(); Store.set('ah_news', news); }
+  if (!Array.isArray(users)) users = [];
+  if (!Array.isArray(feedback)) feedback = [];
+
+  const savedLang = Store.get('ah_lang', 'tr');
+  if (TRANSLATIONS[savedLang]) currentLang = savedLang;
+
+  /* ---------- Ses ---------- */
+  let audioCtx = null;
+  function playClick(freq){
+    try{
+      if (!audioCtx){
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = new AC();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const time = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq || 720, time);
+      o.frequency.exponentialRampToValueAtTime((freq || 720) * 0.55, time + 0.08);
+      g.gain.setValueAtTime(0.0001, time);
+      g.gain.exponentialRampToValueAtTime(0.09, time + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, time + 0.11);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(time); o.stop(time + 0.12);
+    }catch(e){}
+  }
+  function playSuccess(){ try{ playClick(880); setTimeout(() => playClick(1180), 90); }catch(e){} }
+  function playError(){ try{ playClick(280); }catch(e){} }
+
+  document.addEventListener('click', (e) => {
+    const tEl = e.target.closest('button, a, .logo, .news-card, [data-sound]');
+    if (tEl) playClick();
+  }, true);
+
+  let toastTimer = null;
+  function toast(msg, type){
+    const el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + (type || 'info');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.classList.remove('show'); }, 3500);
+  }
+
+  function showSection(id){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = $(id);
+    if (!target) return;
+    target.classList.add('active');
+    document.querySelectorAll('.nav-links [data-section]').forEach(b => {
+      b.classList.toggle('active', b.dataset.section === id);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    closeDropdown();
+    closeLangDropdown();
+  }
+
+  document.addEventListener('click', (e) => {
+    const navBtn = e.target.closest('[data-section]');
+    if (navBtn){ showSection(navBtn.dataset.section); return; }
+    const goto = e.target.closest('[data-goto]');
+    if (goto){ showSection(goto.dataset.goto); return; }
+  });
+  $('logoBtn').addEventListener('click', () => showSection('home'));
+
+  /* ---------- Dil dropdown ---------- */
+  const langBtn = $('langBtn');
+  const langDropdown = $('langDropdown');
+  function closeLangDropdown(){ langDropdown.classList.remove('open'); }
+
+  langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langDropdown.classList.toggle('open');
+    closeDropdown();
+  });
+  langDropdown.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setLanguage(b.dataset.lang);
+      closeLangDropdown();
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lang-wrap')) closeLangDropdown();
+  });
+
+  /* ---------- Account dropdown ---------- */
+  const accountBtn = $('accountBtn');
+  const dropdown   = $('accountDropdown');
+  function closeDropdown(){ dropdown.classList.remove('open'); }
+
+  function renderDropdown(){
+    if (currentUser){
+      accountBtn.classList.add('logged-in');
+      const initial = escapeHtml((currentUser.username || '?').charAt(0).toUpperCase());
+      dropdown.innerHTML = `
+        <div class="dd-head">
+          <div class="dd-avatar">${initial}</div>
+          <div><b>${escapeHtml(currentUser.username)}</b><small>${escapeHtml(t('dd.loggedIn'))}</small></div>
+        </div>
+        <button class="dd-item" data-goto="news">
+          <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Z"/></svg>
+          ${escapeHtml(t('dd.news'))}
+        </button>
+        <button class="dd-item danger" id="logoutBtn">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>
+          ${escapeHtml(t('dd.logout'))}
+        </button>`;
+      const lb = $('logoutBtn');
+      if (lb) lb.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        currentUser = null;
+        Store.set('ah_current', null);
+        renderDropdown(); closeDropdown();
+        toast(t('toast.logout'), 'info'); playError();
+      });
+    } else {
+      accountBtn.classList.remove('logged-in');
+      dropdown.innerHTML = `
+        <div class="dd-head">
+          <div class="dd-avatar" style="background:linear-gradient(135deg,#3a3a4a,#1c1c28)">?</div>
+          <div><b>${escapeHtml(t('dd.guest'))}</b><small>${escapeHtml(t('dd.notLoggedIn'))}</small></div>
+        </div>
+        <button class="dd-item" id="ddLogin">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>
+          ${escapeHtml(t('dd.login'))}
+        </button>
+        <button class="dd-item" id="ddRegister">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+          ${escapeHtml(t('dd.register'))}
+        </button>`;
+      const dl = $('ddLogin');
+      const dr = $('ddRegister');
+      if (dl) dl.addEventListener('click', (ev) => { ev.stopPropagation(); closeDropdown(); openAuth('login'); });
+      if (dr) dr.addEventListener('click', (ev) => { ev.stopPropagation(); closeDropdown(); openAuth('register'); });
+    }
+  }
+
+  accountBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+    closeLangDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.account-wrap')) closeDropdown();
+  });
+
+  /* ---------- Auth Modal ---------- */
+  const authModal = $('authModal');
+  const loginTab  = $('loginTab');
+  const regTab    = $('registerTab');
+  const tabLogin  = $('tabLogin');
+  const tabReg    = $('tabRegister');
+
+  function openAuth(mode){
+    authModal.classList.add('open');
+    switchAuthTab(mode || 'login');
+    setTimeout(() => {
+      const inp = (mode === 'register') ? $('regUser') : $('loginUser');
+      if (inp) inp.focus();
+    }, 300);
+  }
+  function closeAuth(){
+    authModal.classList.remove('open');
+    $('loginErr').textContent = '';
+    $('regErr').textContent = '';
+  }
+  function switchAuthTab(mode){
+    if (mode === 'register'){
+      tabLogin.classList.remove('active');
+      tabReg.classList.add('active');
+      loginTab.classList.remove('active');
+      regTab.classList.add('active');
+      $('authTitle').textContent = t('auth.registerTitle');
+      $('authSub').textContent = t('auth.registerSub');
+    } else {
+      tabReg.classList.remove('active');
+      tabLogin.classList.add('active');
+      regTab.classList.remove('active');
+      loginTab.classList.add('active');
+      $('authTitle').textContent = t('auth.welcome');
+      $('authSub').textContent = t('auth.welcomeSub');
+    }
+  }
+  function updateAuthModalTitles(){
+    if (tabReg.classList.contains('active')) switchAuthTab('register');
+    else switchAuthTab('login');
+  }
+  tabLogin.addEventListener('click', () => switchAuthTab('login'));
+  tabReg.addEventListener('click',   () => switchAuthTab('register'));
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.close;
+      const el = $(id);
+      if (el) el.classList.remove('open');
+      if (id === 'authModal') closeAuth();
+    });
+  });
+  authModal.addEventListener('click', (e) => { if (e.target === authModal) closeAuth(); });
+  $('adminModal').addEventListener('click', (e) => { if (e.target === $('adminModal')) $('adminModal').classList.remove('open'); });
+
+  /* ---------- Kayıt ---------- */
+  regTab.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = $('regUser').value.trim();
+    const p = $('regPass').value;
+    const p2 = $('regPass2').value;
+    const err = $('regErr'); err.textContent = '';
+
+    if (u.length < 3){ err.textContent = t('err.userShort'); playError(); return; }
+    if (p.length < 4){ err.textContent = t('err.passShort'); playError(); return; }
+    if (p !== p2){ err.textContent = t('err.passMismatch'); playError(); return; }
+    if (users.some(x => x.username.toLowerCase() === u.toLowerCase())){ err.textContent = t('err.userTaken'); playError(); return; }
+
+    const user = { username: u, pass: hash(p), createdAt: Date.now() };
+    users.push(user); Store.set('ah_users', users);
+    currentUser = { username: u, createdAt: user.createdAt };
+    Store.set('ah_current', currentUser);
+    renderDropdown(); updateStats(); closeAuth(); playSuccess();
+    toast(t('toast.registered') + ' ' + u + '!', 'success');
+    regTab.reset();
+  });
+
+  /* ---------- Giriş ---------- */
+  loginTab.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = $('loginUser').value.trim();
+    const p = $('loginPass').value;
+    const err = $('loginErr'); err.textContent = '';
+
+    const found = users.find(x => x.username.toLowerCase() === u.toLowerCase());
+    if (!found){ err.textContent = t('err.userNotFound'); playError(); return; }
+    if (found.pass !== hash(p)){ err.textContent = t('err.passWrong'); playError(); return; }
+
+    currentUser = { username: found.username, createdAt: found.createdAt };
+    Store.set('ah_current', currentUser);
+    renderDropdown(); closeAuth(); playSuccess();
+    toast(t('toast.loginOk') + ' ' + found.username + '!', 'success');
+    loginTab.reset();
+  });
+
+  /* ---------- Feedback ---------- */
+  $('feedbackForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('fbName').value.trim() || (currentUser ? currentUser.username : 'Anonim');
+    const type = $('fbType').value;
+    const msg  = $('fbMessage').value.trim();
+    const err  = $('fbErr'); err.textContent = '';
+
+    if (msg.length < 5){ err.textContent = t('err.msgShort'); playError(); return; }
+
+    feedback.push({ id: uid(), name, type, message: msg, date: Date.now() });
+    Store.set('ah_feedback', feedback);
+    updateStats();
+    $('feedbackForm').reset(); playSuccess();
+    toast(t('toast.fbSent'), 'success');
+    renderAdminFeedback();
+  });
+
+  /* ---------- Haberleri Çiz ---------- */
+  function renderNews(){
+    const grid = $('newsGrid');
+    if (!news.length){
+      grid.innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Z"/></svg>
+          <div>${escapeHtml(t('news.empty'))}</div>
+        </div>`;
+      return;
+    }
+    const sorted = news.slice().sort((a,b) => b.date - a.date);
+    grid.innerHTML = sorted.map((n, i) => `
+      <article class="news-card" style="animation-delay:${i*60}ms">
+        <div class="news-head">
+          <span class="news-badge">${escapeHtml(t('news.badge'))}</span>
+          <time>${formatDate(n.date)}</time>
+        </div>
+        <h3>${escapeHtml(n.title)}</h3>
+        <p>${escapeHtml(n.content)}</p>
+        <div class="news-foot">${escapeHtml(t('news.author'))}: ${escapeHtml(n.author || 'Admin')}</div>
+      </article>
+    `).join('');
+  }
+
+  /* =====================================================
+     ADMIN — ŞİFRE: ..//  (karakter kodları: 46,46,47,47)
+     ===================================================== */
+  const ADMIN_PASS_CODES = [46, 46, 47, 47]; //  . . / /
+  const ADMIN_PASS = String.fromCharCode.apply(null, ADMIN_PASS_CODES);
+
+  const adminModal = $('adminModal');
+  const adminLink  = $('adminLink');
+
+  function openAdminModal(){
+    adminModal.classList.add('open');
+    $('adminPass').value = '';
+    $('adminErr').textContent = '';
+    setTimeout(() => $('adminPass').focus(), 300);
+  }
+
+  adminLink.addEventListener('click', openAdminModal);
+  $('adminUnlockBtn').addEventListener('click', openAdminModal);
+
+  $('adminPassForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const raw = $('adminPass').value;
+    const pass = raw.trim();
+    const err = $('adminErr');
+    err.textContent = '';
+
+    const match = (pass === ADMIN_PASS);
+    console.log('[ADMIN GİRİŞ]',
+      '\nGirilen:', JSON.stringify(pass),
+      '\nBeklenen:', JSON.stringify(ADMIN_PASS),
+      '\nEşleşiyor mu:', match,
+      '\nKodlar:', Array.from(pass).map(c => c.charCodeAt(0)));
+
+    if (match){
+      adminOk = true;
+      adminModal.classList.remove('open');
+      $('adminPassForm').reset();
+      showSection('admin');
+      renderAdmin();
+      playSuccess();
+      toast(t('toast.adminOk'), 'success');
+    } else {
+      const kodlar = Array.from(pass).map(c => c.charCodeAt(0)).join(', ');
+      err.textContent = t('toast.adminErr') + ` [${pass.length} karakter: ${kodlar}]`;
+      playError();
+      $('adminPass').value = '';
+      $('adminPass').focus();
+    }
+  });
+
+  // Kolaylık: URL'ye #admin ekleyince veya Ctrl+Shift+A basınca modal açılır
+  if (location.hash === '#admin'){
+    setTimeout(() => { if (!adminOk) openAdminModal(); }, 500);
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a'){
+      e.preventDefault();
+      openAdminModal();
+    }
+  });
+
+  function renderAdmin(){
+    const locked = $('adminLocked');
+    const panel = $('adminPanel');
+    if (!adminOk){
+      locked.style.display = 'block';
+      panel.style.display = 'none';
+      return;
+    }
+    locked.style.display = 'none';
+    panel.style.display = 'block';
+    $('aNews').textContent = news.length;
+    $('aFeedback').textContent = feedback.length;
+    $('aUsers').textContent = users.length;
+    try { renderAdminNews(); } catch(e){ console.error('news render:', e); }
+    try { renderAdminFeedback(); } catch(e){ console.error('fb render:', e); }
+  }
+
+  function renderAdminNews(){
+    const list = $('adminNewsList');
+    if (!news.length){
+      list.innerHTML = `<div style="color:var(--muted);font-size:.86rem;padding:10px 0">${escapeHtml(t('admin.noNews'))}</div>`;
+      return;
+    }
+    const sorted = news.slice().sort((a,b) => b.date - a.date);
+    list.innerHTML = sorted.map(n => `
+      <div class="list-item">
+        <div class="li-body">
+          <b>${escapeHtml(n.title)}</b>
+          <p>${escapeHtml(n.content.length > 140 ? n.content.slice(0,140) + '…' : n.content)}</p>
+          <small>${formatDate(n.date)} • ${escapeHtml(n.author || 'Admin')}</small>
+        </div>
+        <button class="icon-btn" data-del-news="${n.id}" title="Sil">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('[data-del-news]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.delNews;
+        if (!confirm(t('toast.confirmDelNews'))) return;
+        news = news.filter(x => x.id !== id);
+        Store.set('ah_news', news);
+        renderNews(); updateStats(); renderAdmin(); playError();
+        toast(t('toast.newsDeleted'), 'info');
+      });
+    });
+  }
+
+  function renderAdminFeedback(){
+    const list = $('adminFeedbackList');
+    if (!list) return;
+    if (!feedback.length){
+      list.innerHTML = `<div style="color:var(--muted);font-size:.86rem;padding:10px 0">${escapeHtml(t('admin.noMessages'))}</div>`;
+      return;
+    }
+    const sorted = feedback.slice().sort((a,b) => b.date - a.date);
+    list.innerHTML = sorted.map(f => {
+      const typeKey = 'feedback.type' + f.type.charAt(0).toUpperCase() + f.type.slice(1);
+      const typeLabel = TRANSLATIONS[currentLang][typeKey] || f.type;
+      return `
+      <div class="list-item">
+        <div class="li-body">
+          <b>${escapeHtml(typeLabel)} — ${escapeHtml(f.name)}</b>
+          <p>${escapeHtml(f.message)}</p>
+          <small>${formatDate(f.date)}</small>
+        </div>
+        <button class="icon-btn" data-del-fb="${f.id}" title="Sil">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-del-fb]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.delFb;
+        feedback = feedback.filter(x => x.id !== id);
+        Store.set('ah_feedback', feedback);
+        updateStats(); renderAdmin();
+        toast(t('toast.msgDeleted'), 'info');
+      });
+    });
+  }
+
+  $('newsForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = $('newsTitle').value.trim();
+    const content = $('newsContent').value.trim();
+    if (title.length < 3 || content.length < 3){
+      playError(); toast(t('toast.needTitleContent'), 'error'); return;
+    }
+    news.push({
+      id: uid(), title, content,
+      date: Date.now(),
+      author: currentUser ? currentUser.username : 'Admin'
+    });
+    Store.set('ah_news', news);
+    $('newsForm').reset();
+    renderNews(); updateStats(); renderAdmin(); playSuccess();
+    toast(t('toast.newsPublished'), 'success');
+  });
+
+  function updateStats(){
+    const sn = $('statNews'); const sf = $('statFeedback'); const su = $('statUsers');
+    if (sn) sn.textContent = news.length;
+    if (sf) sf.textContent = feedback.length;
+    if (su) su.textContent = users.length;
+  }
+
+  function init(){
+    $('year').textContent = new Date().getFullYear();
+    applyTranslations();
+    renderAdmin();
+    renderAdminFeedback();
+    updateStats();
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>
